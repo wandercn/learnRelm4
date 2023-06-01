@@ -1,58 +1,102 @@
-use relm4::gtk::prelude::*;
+use gtk::prelude::*;
+use rand::prelude::*;
 use relm4::prelude::*;
-use relm4::{gtk, ComponentParts, ComponentSender, SimpleComponent};
-
-pub struct ComponentModel {}
 
 #[derive(Debug)]
-pub enum ComponentInput {}
+enum Msg {
+    Play,
+    Suspend,
+    Stop,
+    Next,
+    Prev,
+}
 
-#[derive(Debug)]
-pub enum ComponentOutput {}
+struct App {
+    music_dir: &'static str,
+    volume: f64,
+    play_mode: Modes,
+    music_library: Option<Vec<Song>>,
+}
 
-pub struct ComponentInit {}
+enum Modes {
+    Order,
+    Random,
+    Repet,
+}
 
-#[relm4::component(pub)]
-impl SimpleComponent for ComponentModel {
-    type Input = ComponentInput;
-    type Output = ComponentOutput;
+struct Song {
+    title: String,
+    artist: String,
+    album: String,
+    duration: f64,
+    playing: bool,
+    date: String,
+    file: String,
+}
+
+#[relm4::component]
+impl SimpleComponent for App {
     type Init = ();
-    view! {
-                #[root]
-                gtk::Window{
-                    set_title:Some("MusicPlayer"),
-                    gtk::HeaderBar{
+    type Input = Msg;
+    type Output = ();
 
-                        #[wrap(Some)]
-        set_title_widget = &gtk::Label{
-            #[watch]
-    set_label:"musicPlayer",
+    view! {
+        #[root]
+        gtk::Window {
+            gtk::Box{
+                set_orientation:gtk::Orientation::Vertical,
+                gtk::SearchEntry{
+                    set_placeholder_text:Some("搜索"),
+                        },
+                        gtk::Box{
+                            set_orientation:gtk::Orientation::Vertical,
+
+
+                            gtk::Button{
+                                set_height_request:48,
+                                set_width_request:48,
+                                set_icon_name:"media-optical-symbolic",
+
+                            },
+                            gtk::Button{
+                                set_height_request:48,
+                                set_width_request:48,
+                            set_icon_name:"media-playlist-consecutive-symbolic"
+                            }
+                        },
+            },
 
         }
-                    },
-                    gtk::Box{
+    }
 
-                    }
-
-
-                }
-            }
+    fn update(&mut self, msg: Msg, _sender: ComponentSender<Self>) {
+        match msg {
+            Msg::Play => println!("Play"),
+            Msg::Suspend => println!("Suspend"),
+            Msg::Stop => println!("Stop"),
+            Msg::Next => println!("Next"),
+            Msg::Prev => println!("Prev"),
+        }
+    }
 
     fn init(
-        init: Self::Init,
+        _: Self::Init,
         root: &Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = ComponentModel {};
+        let model = App {
+            music_dir: "",
+            volume: 0.4,
+            play_mode: Modes::Order,
+            music_library: None,
+        };
         let widgets = view_output!();
+
         ComponentParts { model, widgets }
     }
-
-    fn update(&mut self, message: Self::Input, sender: ComponentSender<Self>) {
-        match message {}
-    }
 }
+
 fn main() {
-    let app = RelmApp::new("musicplayer.ffactory.org");
-    app.run::<ComponentModel>(());
+    let app = RelmApp::new("player.ffactory.org");
+    app.run::<App>(());
 }
