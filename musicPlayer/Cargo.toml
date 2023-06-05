@@ -6,9 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gtk = { version = "0.5", package = "gtk4", feature = "v4_10"}
-relm4 = "0.5.1"
-relm4-macros = "0.5.1"
-relm4-components = "0.5.1"
+gtk = { version = "0.6.6", package = "gtk4", feature = "v4_10"}
+relm4-macros = "0.6.0"
+relm4-components = "0.6.0"
 tracker = "0.2.1"
 rand = "0.8.5"
+relm4 = "0.6.0"
+gio = "0.17.9"
+glib = "0.17.9"
